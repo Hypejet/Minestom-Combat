@@ -1,15 +1,22 @@
 plugins {
-    id("java")
+    java
+    `maven-publish`
 }
 
-group = "nl.juriantech"
-version = "1.0-SNAPSHOT"
+group = "net.hypejet"
+version = "1.0"
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://jitpack.io") }
+    maven("https://jitpack.io")
 }
 
 dependencies {
-    implementation("net.minestom:minestom-snapshots:1_20_5-95c5f6675f")
+    implementation(libs.minestom)
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    withJavadocJar()
+    withSourcesJar()
 }
