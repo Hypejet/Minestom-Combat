@@ -1,6 +1,6 @@
-package net.hypejet.combat.event;
+package net.hypejet.combat.attack.event;
 
-import net.hypejet.combat.player.CombatPlayer;
+import net.hypejet.combat.entity.CombatPlayer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.event.trait.PlayerEvent;

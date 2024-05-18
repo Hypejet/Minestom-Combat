@@ -1,32 +1,32 @@
-package net.hypejet.combat.event;
+package net.hypejet.combat.attack.event;
 
-import net.hypejet.combat.player.CombatPlayer;
-import net.minestom.server.entity.Entity;
+import net.hypejet.combat.entity.CombatEntity;
+import net.hypejet.combat.entity.CombatPlayer;
 import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.event.trait.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents an event called when a player attacks an entity.
+ * Represents an event called before a player attacks an entity.
  *
  * @since 1.0
  * @author Codestech
  */
-public final class PlayerAttackEvent implements PlayerEvent, CancellableEvent {
+public final class PlayerPreAttackEvent implements PlayerEvent, CancellableEvent {
 
     private final CombatPlayer player;
-    private final Entity target;
+    private final CombatEntity target;
 
     private boolean cancelled;
 
     /**
-     * Constructs a {@link PlayerAttackEvent}.
+     * Constructs a {@link PlayerPreAttackEvent}.
      *
-     * @param player a player that attacked the target
-     * @param target an entity that has been attacked
+     * @param player a player that tried to attack the target
+     * @param target an entity that is being attacked
      * @since 1.0
      */
-    public PlayerAttackEvent(@NotNull CombatPlayer player, @NotNull Entity target) {
+    public PlayerPreAttackEvent(@NotNull CombatPlayer player, @NotNull CombatEntity target) {
         this.player = player;
         this.target = target;
     }
@@ -47,12 +47,12 @@ public final class PlayerAttackEvent implements PlayerEvent, CancellableEvent {
     }
 
     /**
-     * Gets an entity that has been attacked.
+     * Gets an entity that is being attacked.
      *
      * @return the entity
      * @since 1.0
      */
-    public @NotNull Entity getTarget() {
+    public @NotNull CombatEntity getTarget() {
         return this.target;
     }
 }
