@@ -2,7 +2,6 @@ package net.hypejet.combat.player;
 
 import net.hypejet.combat.event.PlayerAttackEvent;
 import net.hypejet.combat.event.PlayerSwingHandEvent;
-import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
@@ -95,9 +94,6 @@ public class CombatPlayer extends Player {
             if (initialStrengthTicks != newStrengthTicks) {
                 this.attackStrengthTicks = newStrengthTicks;
             }
-
-            this.sendMessage(Component.text("New strength ticks - " + newStrengthTicks));
-            this.sendMessage(Component.text("Tick thread - " + Thread.currentThread().getName()));
         } finally {
             this.lock.unlock();
         }
