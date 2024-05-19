@@ -11,6 +11,7 @@ import net.minestom.server.entity.attribute.Attribute;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
+import net.minestom.server.event.player.PlayerBlockPlaceEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.LightingChunk;
@@ -44,6 +45,12 @@ public class Test {
         global.addListener(PlayerAttackEvent.class, event ->
                 event.getPlayer().sendMessage("Values of the attack: " + event.getValues())
         );
+
+        global.addListener(PlayerBlockPlaceEvent.class, event -> {
+            if (event.getBlock().compare(Block.ACACIA_TRAPDOOR)) {
+                event.setBlock(Block.ACACIA_TRAPDOOR.withProperty("open", "true"));
+            }
+        });
 
         server.start("localhost", 25565);
 

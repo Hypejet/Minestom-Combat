@@ -9,13 +9,16 @@ import net.hypejet.combat.knockback.cause.KnockbackCause;
 import net.hypejet.combat.util.KnockbackUtil;
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.ServerFlag;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
+import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.attribute.Attribute;
 import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.event.EventDispatcher;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.potion.PotionEffect;
@@ -52,6 +55,7 @@ public class CombatPlayer extends Player implements CombatEntity {
     public void update(long time) {
         super.update(time);
         this.attackStrengthTick();
+        this.sendMessage("On climbable: " + this.isOnClimbable());
     }
 
     /**
@@ -233,7 +237,28 @@ public class CombatPlayer extends Player implements CombatEntity {
     }
 
     private boolean isOnClimbable() {
-        return false; // TODO
+        if (this.getGameMode() == GameMode.SPECTATOR) return false;
+
+        Pos position = this.position;
+        Block block = this.instance.getBlock(position);
+
+        // TODO: Make a pull request for minestom data generator for base block tag checking
+        if (block.compare(Block.LADDER) || block.compare(Block.VINE)) return true;
+
+        // TODO: More trapdoors, maybe minestom data generator value?
+        return block.compare(Block.ACACIA_TRAPDOOR) && this.isTrapdoorUsableAsLadder(position, block);
+    }
+
+    // TODO: Trapdoor properties class?
+    private boolean isTrapdoorUsableAsLadder(@NotNull Pos blockPosition, @NotNull Block block) {
+        if (block.getProperty("open").equalsIgnoreCase("true")) {
+            Block blockBelow = this.instance.getBlock(blockPosition.sub(0, 1, 0));
+
+            return blockBelow.compare(Block.LADDER)
+                    && blockBelow.getProperty("facing").equals(block.getProperty("facing"));
+        }
+
+        return false;
     }
 
     private boolean isInWater() {
