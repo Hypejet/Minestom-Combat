@@ -5,6 +5,8 @@ import net.hypejet.combat.attack.event.PlayerAttackEvent;
 import net.hypejet.combat.attack.event.PlayerPreAttackEvent;
 import net.hypejet.combat.attack.event.PlayerSwingHandEvent;
 import net.hypejet.combat.attack.values.AttackValues;
+import net.hypejet.combat.block.FacingBlockProperties;
+import net.hypejet.combat.block.TrapdoorBlockProperties;
 import net.hypejet.combat.knockback.cause.KnockbackCause;
 import net.hypejet.combat.util.KnockbackUtil;
 import net.kyori.adventure.sound.Sound;
@@ -249,16 +251,15 @@ public class CombatPlayer extends Player implements CombatEntity {
         return block.compare(Block.ACACIA_TRAPDOOR) && this.isTrapdoorUsableAsLadder(position, block);
     }
 
-    // TODO: Trapdoor properties class?
     private boolean isTrapdoorUsableAsLadder(@NotNull Pos blockPosition, @NotNull Block block) {
-        if (block.getProperty("open").equalsIgnoreCase("true")) {
-            Block blockBelow = this.instance.getBlock(blockPosition.sub(0, 1, 0));
+        TrapdoorBlockProperties properties = TrapdoorBlockProperties.of(block);
 
-            return blockBelow.compare(Block.LADDER)
-                    && blockBelow.getProperty("facing").equals(block.getProperty("facing"));
-        }
+        if (!properties.isOpen()) return false;
 
-        return false;
+        Block blockBelow = this.instance.getBlock(blockPosition.sub(0, 1, 0));
+        FacingBlockProperties belowProperties = FacingBlockProperties.ofUnknown(blockBelow);
+
+        return blockBelow.compare(Block.LADDER) && belowProperties.blockFace().equals(properties.blockFace());
     }
 
     private boolean isInWater() {
