@@ -5,7 +5,10 @@ import net.hypejet.combat.attack.event.PlayerAttackEvent;
 import net.hypejet.combat.attack.event.PlayerPreAttackEvent;
 import net.hypejet.combat.attack.event.PlayerSwingHandEvent;
 import net.hypejet.combat.attack.values.AttackValues;
+import net.hypejet.combat.knockback.cause.KnockbackCause;
+import net.hypejet.combat.util.KnockbackUtil;
 import net.kyori.adventure.sound.Sound;
+import net.minestom.server.ServerFlag;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.LivingEntity;
@@ -108,7 +111,6 @@ public class CombatPlayer extends Player implements CombatEntity {
         boolean sweepAttack = strongAttack && !criticalAttack && !sprintAttack && this.onGround
                 && lastMoveDistance < this.getSpeed(); // TODO: Check if an item in the main hand is a sword
 
-        double initialHealth = 0f;
         int fireAspect = 0; // TODO: Enchantment manager
 
         AttackValues values = new AttackValues(
@@ -121,29 +123,53 @@ public class CombatPlayer extends Player implements CombatEntity {
 
         if (attackEvent.isCancelled()) return;
 
-        boolean combusted = false;
+        double initialHealth = 0f;
 
         if (target instanceof LivingEntity entity) {
             initialHealth = entity.getHealth();
-
-            if (fireAspect > 0 && !entity.isOnFire()) {
-                EntityCombustByPlayerEvent combustEvent = new EntityCombustByPlayerEvent(this, entity, 1);
-                EventDispatcher.call(combustEvent);
-
-                if (!combustEvent.isCancelled()) {
-                    combusted = true;
-                    entity.setFireForDuration(1, TimeUnit.SECOND);
-                }
-            }
         }
 
         Entity targetEntity = target.asMinestomEntity();
-        Vec velocity = targetEntity.getVelocity();
-
         boolean damageSucceed = false;
+
+        Vec velocity = targetEntity.getVelocity();
 
         if (targetEntity instanceof LivingEntity entity) {
             damageSucceed = entity.damage(DamageType.PLAYER_ATTACK, attackDamage); // TODO: Custom damage class
+        }
+
+        if (!damageSucceed) {
+            this.instance.playSound(
+                    Sound.sound(SoundEvent.ENTITY_PLAYER_ATTACK_NODAMAGE, Sound.Source.PLAYER, 1, 1),
+                    this.getPosition()
+            );
+            this.getInventory().update();
+            return;
+        }
+
+        boolean combusted = false;
+
+        if (targetEntity instanceof LivingEntity entity && fireAspect > 0 && !entity.isOnFire()) {
+            EntityCombustByPlayerEvent combustEvent = new EntityCombustByPlayerEvent(this, entity, 1);
+            EventDispatcher.call(combustEvent);
+
+            if (!combustEvent.isCancelled()) {
+                combusted = true;
+                entity.setFireForDuration(1, TimeUnit.SECOND);
+            }
+        }
+
+        if (knockbackBonus > 0) {
+            KnockbackUtil.knockback(
+                    knockbackBonus * 0.5f,
+                    Math.sin(this.getPosition().yaw() * 0.017453292f),
+                    -(Math.cos(this.getPosition().yaw() * 0.017453292f)),
+                    target,
+                    new KnockbackCause.EntityAttack(this)
+            );
+
+            this.setDeltaMovement(this.getVelocity().mul(new Vec(0.6, 1, 0.6).mul(ServerFlag.SERVER_TICKS_PER_SECOND)));
+            this.setSprinting(false);
         }
     }
 
