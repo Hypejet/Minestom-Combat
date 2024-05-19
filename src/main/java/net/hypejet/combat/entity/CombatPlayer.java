@@ -259,7 +259,7 @@ public class CombatPlayer extends Player implements CombatEntity {
         Block blockBelow = this.instance.getBlock(blockPosition.sub(0, 1, 0));
         FacingBlockProperties belowProperties = FacingBlockProperties.ofUnknown(blockBelow);
 
-        return blockBelow.compare(Block.LADDER) && belowProperties.blockFace().equals(properties.blockFace());
+        return blockBelow.compare(Block.LADDER) && belowProperties.blockFace() == properties.blockFace();
     }
 
     private boolean isInWater() {
