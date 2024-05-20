@@ -8,6 +8,7 @@ import net.hypejet.combat.attack.values.AttackValues;
 import net.hypejet.combat.block.FacingBlockProperties;
 import net.hypejet.combat.block.TrapdoorBlockProperties;
 import net.hypejet.combat.knockback.cause.KnockbackCause;
+import net.hypejet.combat.util.BlockUtil;
 import net.hypejet.combat.util.KnockbackUtil;
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.ServerFlag;
@@ -244,11 +245,9 @@ public class CombatPlayer extends Player implements CombatEntity {
         Pos position = this.position;
         Block block = this.instance.getBlock(position);
 
-        // TODO: Make a pull request for minestom data generator for base block tag checking
-        if (block.compare(Block.LADDER) || block.compare(Block.VINE)) return true;
+        if (BlockUtil.isClimbable(block)) return true;
 
-        // TODO: More trapdoors, maybe minestom data generator value?
-        return block.compare(Block.ACACIA_TRAPDOOR) && this.isTrapdoorUsableAsLadder(position, block);
+        return BlockUtil.isTrapdoor(block) && this.isTrapdoorUsableAsLadder(position, block);
     }
 
     private boolean isTrapdoorUsableAsLadder(@NotNull Pos blockPosition, @NotNull Block block) {

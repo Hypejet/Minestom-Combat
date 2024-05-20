@@ -2,6 +2,7 @@ package net.hypejet.combat;
 
 import net.hypejet.combat.attack.event.PlayerAttackEvent;
 import net.hypejet.combat.entity.CombatEntity;
+import net.hypejet.combat.util.BlockUtil;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.EntityType;
@@ -47,9 +48,8 @@ public class Test {
         );
 
         global.addListener(PlayerBlockPlaceEvent.class, event -> {
-            if (event.getBlock().compare(Block.ACACIA_TRAPDOOR)) {
-                event.setBlock(Block.ACACIA_TRAPDOOR.withProperty("open", "true"));
-            }
+            Block block = event.getBlock();
+            if (BlockUtil.isTrapdoor(block)) event.setBlock(block.withProperty("open", "true"));
         });
 
         server.start("localhost", 25565);
