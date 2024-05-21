@@ -58,7 +58,7 @@ public class CombatPlayer extends Player implements CombatEntity {
     public void update(long time) {
         super.update(time);
         this.attackStrengthTick();
-        this.sendMessage("On climbable: " + this.isOnClimbable());
+        this.sendMessage("On climbable: " + this.isClimbing());
     }
 
     /**
@@ -104,7 +104,7 @@ public class CombatPlayer extends Player implements CombatEntity {
 
         attackDamage += 0; // TODO: Item attack damage bonus
 
-        boolean criticalAttack = strongAttack && this.fallDistance() > 0 && !this.isOnGround() && !this.isOnClimbable()
+        boolean criticalAttack = strongAttack && this.fallDistance() > 0 && !this.isOnGround() && !this.isClimbing()
                 && !this.isInWater() && !this.hasEffect(PotionEffect.BLINDNESS) && !this.isPassenger()
                 && target instanceof LivingEntity && this.isSprinting();
 
@@ -239,7 +239,7 @@ public class CombatPlayer extends Player implements CombatEntity {
         return 0; // TODO
     }
 
-    private boolean isOnClimbable() {
+    private boolean isClimbing() {
         if (this.getGameMode() == GameMode.SPECTATOR) return false;
 
         Pos position = this.position;
