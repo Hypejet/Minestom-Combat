@@ -270,8 +270,7 @@ public class CombatPlayer extends Player implements CombatEntity {
     }
 
     private double getSpeed() {
-        // Clamp instead of casting to float and then to double
-        return Math.clamp(this.getAttributeValue(Attribute.GENERIC_MOVEMENT_SPEED), Float.MIN_VALUE, Float.MAX_VALUE);
+        return this.getAttributeValue(Attribute.GENERIC_MOVEMENT_SPEED);
     }
 
     @Override
