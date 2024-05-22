@@ -175,7 +175,7 @@ public class CombatPlayer extends Player implements CombatEntity {
                     new KnockbackCause.EntityAttack(this)
             );
 
-            this.setDeltaMovement(this.getVelocity().mul(new Vec(0.6, 1, 0.6).mul(ServerFlag.SERVER_TICKS_PER_SECOND)));
+            this.setDeltaMovement(this.getVelocity().mul(new Vec(0.6, 1, 0.6)));
             this.setSprinting(false);
         }
     }
