@@ -11,7 +11,6 @@ import net.hypejet.combat.knockback.cause.KnockbackCause;
 import net.hypejet.combat.util.BlockUtil;
 import net.hypejet.combat.util.KnockbackUtil;
 import net.kyori.adventure.sound.Sound;
-import net.minestom.server.ServerFlag;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;

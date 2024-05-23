@@ -1,5 +1,5 @@
 [versions]
-minestom = "1_20_5-95c5f6675f"
+minestom = "1_20_5-323c75f8a5"
 
 [libraries]
 minestom = { module = "net.minestom:minestom-snapshots", version.ref = "minestom" }
